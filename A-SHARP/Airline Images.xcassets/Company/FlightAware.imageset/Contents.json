@@ -1,0 +1,22 @@
+{
+  "images" : [
+    {
+      "filename" : "FA_Logo_RGB-Hex.png",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "FA_Logo_WHT.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
