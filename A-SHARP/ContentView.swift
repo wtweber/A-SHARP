@@ -36,7 +36,7 @@ struct ContentView: View {
                 VStack {
                     NavigationTabView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: $overlayHeight)
                         .clipShape(.rect(cornerRadius: 36))
-                        .padding([.horizontal])
+                        .padding([.horizontal], horizontalClass == .compact ? 5 : 20 )
                         .ignoresSafeArea(edges: .bottom)
                 }
                 .frame(maxWidth: horizontalClass == .compact ? .infinity : 375, maxHeight: overlayHeight)
