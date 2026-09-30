@@ -25,7 +25,8 @@ struct FlightListView: View {
                     Text("Flights")
                     Spacer()
                 }.font(.system(size: 34, weight: .bold, design: .default))
-                    .padding([.horizontal, .top])
+                    .padding([.horizontal])
+                    .padding(.top, 25)
                     .padding(.bottom, 5)
                     .background(Color(uiColor: .systemGroupedBackground))
                     .gesture(
@@ -36,7 +37,7 @@ struct FlightListView: View {
                                 }
                             }
                             .onEnded { value in
-                                withAnimation(.spring()) {
+                                withAnimation(.snappy) {
                                     let releaseHeight = windowSize.height - value.predictedEndLocation.y
                                     if releaseHeight < windowSize.height * 0.3 {
                                         overlayHeight = windowSize.height * 0.30
