@@ -32,7 +32,7 @@ struct FlightListView: View {
                     .gesture(
                         DragGesture(minimumDistance: 50, coordinateSpace: .global)
                             .onChanged { value in
-                                withAnimation(.spring()) {
+                                withAnimation(.snappy) {
                                     overlayHeight =  max(0, windowSize.height - value.location.y + 50)
                                 }
                             }
