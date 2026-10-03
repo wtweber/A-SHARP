@@ -15,6 +15,8 @@ struct FlightListView: View {
     @Query(sort: \Flight.actualOut, order: .reverse)
     var flights: [Flight]
     
+    @State var showNewSheet: Bool = false
+    
     @Binding var selectedFlight: Flight?
     @Binding var overlayHeight: CGFloat
     
@@ -23,8 +25,18 @@ struct FlightListView: View {
             VStack(spacing: 0) {
                 HStack {
                     Text("Flights")
+                        .font(.system(size: 34, weight: .bold, design: .default))
                     Spacer()
-                }.font(.system(size: 34, weight: .bold, design: .default))
+                    Button { showNewSheet.toggle()
+                    } label: {
+                        Label("New", systemImage: "plus")
+                            .labelStyle(.iconOnly)
+                            .foregroundStyle(.primary)
+                            .padding()
+                            .background(.ultraThinMaterial)
+                            .clipShape(.circle)
+                    }.buttonStyle(.plain)
+                }
                     .padding([.horizontal])
                     .padding(.top, 25)
                     .padding(.bottom, 5)
@@ -60,6 +72,9 @@ struct FlightListView: View {
                     }.id(flight)
                 }
             }.toolbar(.hidden, for: .navigationBar)
+                .sheet(isPresented: $showNewSheet) {
+                    EmptyView()
+                }
         }
     }
 }
