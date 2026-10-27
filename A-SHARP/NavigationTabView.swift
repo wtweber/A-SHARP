@@ -20,10 +20,10 @@ struct NavigationTabView: View {
             Tab("Flights", systemImage: "airplane.ticket") {
                 FlightListView(selectedFlight: $selectedFlight)//, overlayHeight: $overlaySize)
                 }
-            /*Tab("Airports", image: "airport.large") {
-                NavigationStack { AirportListView(selectedAirport: $selectedAirport, searchText: $searchText, overlayHeight: $overlayHeight) }
+            Tab("Airports", image: "airport.large") {
+                NavigationStack { AirportListView(selectedAirport: $selectedAirport, searchText: $searchText) }//, overlayHeight: $overlayHeight) }
                 }
-            Tab("Aircraft", systemImage: "airplane.landed") {
+            /*Tab("Aircraft", systemImage: "airplane.landed") {
                 NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft, searchText: $searchText, overlayHeight: $overlayHeight) }
                 }
             Tab("Crew", systemImage: "person.3") {

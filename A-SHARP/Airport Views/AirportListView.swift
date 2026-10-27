@@ -17,12 +17,12 @@ struct AirportListView: View {
     
     @Binding var selectedAirport: Airport?
     @Binding var searchText: String
-    @Binding var overlayHeight: CGFloat
+    //@Binding var overlayHeight: CGFloat
     
-    init(selectedAirport: Binding<Airport?>, searchText: Binding<String>, overlayHeight: Binding<CGFloat>) {
+    init(selectedAirport: Binding<Airport?>, searchText: Binding<String>) {//}, overlayHeight: Binding<CGFloat>) {
         _selectedAirport = selectedAirport
         _searchText = searchText
-        _overlayHeight = overlayHeight
+        //_overlayHeight = overlayHeight
         
         let queryText = searchText.wrappedValue
         _airports = Query(filter: #Predicate {
@@ -43,46 +43,32 @@ struct AirportListView: View {
         VStack(spacing: 0) {
             HStack {
                 Text("Airports")
+                    .font(.system(size: 34, weight: .bold, design: .default))
                 Spacer()
-            }.font(.system(size: 34, weight: .bold, design: .default))
-                .padding([.horizontal, .top])
-                .padding(.bottom, 5)
-                .background(Color(uiColor: .systemGroupedBackground))
-                .gesture(
-                    DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                        .onChanged { value in
-                            withAnimation(.spring()) {
-                                overlayHeight =  max(0, windowSize.height - value.location.y + 50)
-                            }
-                        }
-                        .onEnded { value in
-                            withAnimation(.spring()) {
-                                let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                if releaseHeight < windowSize.height * 0.3 {
-                                    overlayHeight = windowSize.height * 0.30
-                                } else if releaseHeight < windowSize.height * 0.75 {
-                                    overlayHeight = windowSize.height * 0.5
-                                } else {
-                                    overlayHeight = .infinity
-                                }
-                            }
-                        }
-                )
+            }
+            .padding(.top, 25)
+            .padding(.bottom, 5)
+            .padding([.horizontal])
+            .background(Color.viewBackground)
             NavigationStack {
                 List(airports, selection: $selectedAirport) { section in
                     Section(Locale.current.localizedString(forRegionCode: section.title) ?? "Unknown") {
                         ForEach(section) { airport in
                             NavigationLink {
-                                AirportDetailView(airport: airport, overlayHeight: $overlayHeight)
+                                AirportDetailView(airport: airport)//, overlayHeight: $overlayHeight)
                                     .onDisappear {
                                         selectedAirport = nil
                                     }
                             } label: {
                                 AirportRowView(airport: airport)
-                            }.tag(airport)
+                            }.tag(airport).listRowBackground(Color.viewBackground)
                         }
                     }
-                }.toolbar(.hidden, for: .navigationBar)
+                }
+                .toolbar(.hidden, for: .navigationBar)
+                .scrollContentBackground(.hidden)
+                .background(Color.viewBackground)
+                .listStyle(.inset)
             }
         }
     }

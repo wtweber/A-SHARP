@@ -47,7 +47,7 @@ struct FlightListView: View {
                     } label: {
                         FlightRowView(flight: flight)
                     }.id(flight).listRowBackground(Color.viewBackground)
-                }//
+                }
                 .scrollContentBackground(.hidden)
                 .background(Color.viewBackground)
                 .listStyle(.inset)
