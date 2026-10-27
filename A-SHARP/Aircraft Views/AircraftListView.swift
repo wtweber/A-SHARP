@@ -16,12 +16,10 @@ struct AircraftListView: View {
     
     @Binding var selectedAircraft: Aircraft?
     @Binding var searchText: String
-    @Binding var overlayHeight: CGFloat
     
-    init(selectedAircraft: Binding<Aircraft?>, searchText: Binding<String>, overlayHeight: Binding<CGFloat>) {
+    init(selectedAircraft: Binding<Aircraft?>, searchText: Binding<String>) {
         _selectedAircraft = selectedAircraft
         _searchText = searchText
-        _overlayHeight = overlayHeight
         
         let queryText = searchText.wrappedValue
         _aircrafts = Query(filter: #Predicate {
@@ -33,53 +31,37 @@ struct AircraftListView: View {
     }
     
     var body: some View {
-        
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Aircraft")
+                    .font(.system(size: 34, weight: .bold, design: .default))
                 Spacer()
-            }.font(.system(size: 34, weight: .bold, design: .default))
-                .padding([.horizontal, .top])
-                .padding(.bottom, 5)
-                .background(Color(uiColor: .systemGroupedBackground))
-                .gesture(
-                    DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                        .onChanged { value in
-                            withAnimation(.spring()) {
-                                overlayHeight =  max(0, windowSize.height - value.location.y + 50)
-                            }
-                        }
-                        .onEnded { value in
-                            withAnimation(.spring()) {
-                                let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                if releaseHeight < windowSize.height * 0.3 {
-                                    overlayHeight = windowSize.height * 0.30
-                                } else if releaseHeight < windowSize.height * 0.75 {
-                                    overlayHeight = windowSize.height * 0.5
-                                } else {
-                                    overlayHeight = .infinity
-                                }
-                            }
-                        }
-                )
+            }
+            .padding(.top, 25)
+            .padding(.bottom, 5)
+            .padding([.horizontal])
+            searchBarView(searchText: $searchText)
             NavigationStack {
                 List(aircrafts, selection: $selectedAircraft) { section in
                     Section(section.title) {
                         ForEach(section) { aircraft in
                             NavigationLink {
-                                AircraftDetailView(aircraft: aircraft, overlayHeight: $overlayHeight)
+                                AircraftDetailView(aircraft: aircraft)
                                     .onDisappear {
                                         selectedAircraft = nil
                                     }
                             } label: {
                                 AircraftRowView(aircraft: aircraft, operatorString: aircraft.flights?.first?.operatorString)
-                            }.tag(aircraft)
+                            }.tag(aircraft).listRowBackground(Color.viewBackground)
                         }
                     }
                 }
+                .toolbar(.hidden, for: .navigationBar)
+                .scrollContentBackground(.hidden)
+                .background(Color.viewBackground)
+                .listStyle(.inset)
             }
-            .toolbar(.hidden, for: .navigationBar)
-        }
+        }.background(Color.viewBackground)
     }
 }
 

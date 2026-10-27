@@ -23,10 +23,10 @@ struct NavigationTabView: View {
             Tab("Airports", image: "airport.large") {
                 AirportSearchWrapper(selectedAirport: $selectedAirport)
             }
-            /*Tab("Aircraft", systemImage: "airplane.landed") {
-                NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft, searchText: $searchText, overlayHeight: $overlayHeight) }
+            Tab("Aircraft", systemImage: "airplane.landed") {
+                AircraftSearchWrapper(selectedAircraft: $selectedAircraft)
                 }
-            Tab("Crew", systemImage: "person.3") {
+            /*Tab("Crew", systemImage: "person.3") {
                 NavigationStack { EmptyView() }
                 }
             Tab("Stats", systemImage: "chart.pie", role: .search) {
