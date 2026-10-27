@@ -86,3 +86,16 @@ struct searchBarView: View {
         .padding(.bottom, 5)
     }
 }
+
+struct IdentBox: View {
+    @State var ident: String
+    
+    var body: some View {
+        Text(ident)
+            .padding(2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 2)
+                    .stroke(.secondary, lineWidth: 1) // Draws the outline
+            )
+    }
+}

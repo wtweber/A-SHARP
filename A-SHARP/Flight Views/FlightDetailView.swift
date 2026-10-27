@@ -36,7 +36,6 @@ struct FlightDetailView: View {
                     }
                     .buttonStyle(.glass)
                     .buttonBorderShape(.circle)
-                    
                 }
                 .padding(.top, 25)
                 .padding(.bottom, 5)

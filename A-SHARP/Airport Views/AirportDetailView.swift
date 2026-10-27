@@ -18,49 +18,22 @@ struct AirportDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading) {
-                HStack (alignment: .top) {
+                HStack {
                     Text(airport?.name ?? "").font(.title)
                     Spacer()
                     Button { dismiss() } label: {
-                        Label("Close", systemImage: "xmark")
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.primary)
-                            .clipShape(.circle)
-                    }.buttonStyle(.plain)
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 17, weight: .semibold))
+                            .padding(5)
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                 }.padding(.bottom, 0)
                 HStack {
-                    if let icao = airport?.icao {
-                        Text(icao)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
-                    if let iata = airport?.iata {
-                        Text(iata)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
-                    if let gps = airport?.gpsCode {
-                        Text(gps)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
-                    if let local = airport?.localCode {
-                        Text(local)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
+                    if let icao = airport?.icao { IdentBox(ident: icao) }
+                    if let iata = airport?.iata { IdentBox(ident: iata) }
+                    if let gps = airport?.gpsCode { IdentBox(ident: gps) }
+                    if let local = airport?.localCode { IdentBox(ident: local) }
                 }.font(.caption).foregroundStyle(Color.secondary)
                 HStack {
                     if let iso = airport?.isoCountryCode {
@@ -76,16 +49,20 @@ struct AirportDetailView: View {
                 }
             }.padding([.horizontal, .top])
                 .padding(.bottom, 5)
-                .background(Color(uiColor: .systemGroupedBackground))
+            //.background(Color(uiColor: .systemGroupedBackground))
             List {
                 Section {
                     ForEach(airport?.allFlights ?? []) { flight in
-                        FlightRowView(flight: flight)
+                        FlightRowView(flight: flight).listRowBackground(Color.viewBackground)
                     }
                 } header: {
                     Text("\(airport?.allFlights.count ?? 0) Flights")
                 }
-            }.toolbar(.hidden, for: .navigationBar)
-        }
+            }
+            .toolbar(.hidden, for: .navigationBar)
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
+            .background(Color.viewBackground)
+        }.background(Color.viewBackground)
     }
 }
