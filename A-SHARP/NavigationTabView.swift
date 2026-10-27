@@ -21,8 +21,8 @@ struct NavigationTabView: View {
                 FlightListView(selectedFlight: $selectedFlight)//, overlayHeight: $overlaySize)
                 }
             Tab("Airports", image: "airport.large") {
-                NavigationStack { AirportListView(selectedAirport: $selectedAirport, searchText: $searchText) }//, overlayHeight: $overlayHeight) }
-                }
+                AirportSearchWrapper(selectedAirport: $selectedAirport)
+            }
             /*Tab("Aircraft", systemImage: "airplane.landed") {
                 NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft, searchText: $searchText, overlayHeight: $overlayHeight) }
                 }

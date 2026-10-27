@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct AirportSearchWrapper: View {
+    @Binding var selectedAirport: Airport?
+    @State var searchText: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack { AirportListView(selectedAirport: $selectedAirport, searchText: $searchText) }
     }
 }
 
-#Preview {
-    AirportSearchWrapper()
-}

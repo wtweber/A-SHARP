@@ -12,18 +12,30 @@ extension Color {
     static let viewBackground = Color("OverlayBackground")
 }
 
-struct ToolbarButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 17, weight: .regular)) // Native toolbar icon sizing
-            .foregroundStyle(configuration.isPressed ? .secondary : .primary)
-            .padding(8)
-            .contentShape(Rectangle()) // Ensures the empty space around a small icon is tappable
-            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
+struct ClearButtonModifier: ViewModifier {
+    @Binding var text: String
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(alignment: .trailing) {
+                if !text.isEmpty {
+                    Button(action: {
+                        self.text = ""
+                    }) {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.trailing, 8)
+                    // Prevents the button from grabbing keyboard focus on macOS/tvOS
+                    .buttonStyle(.plain)
+                }
+            }
     }
 }
 
-// Convenience extension for clean dot-notation access
-extension ButtonStyle where Self == ToolbarButtonStyle {
-    static var toolbarLike: ToolbarButtonStyle { ToolbarButtonStyle() }
+// 2. Create a View Extension for elegant dot-syntax chaining
+extension View {
+    func clearButton(text: Binding<String>) -> some View {
+        self.modifier(ClearButtonModifier(text: text))
+    }
 }

@@ -19,6 +19,8 @@ struct AirportListView: View {
     @Binding var searchText: String
     //@Binding var overlayHeight: CGFloat
     
+    @State private var isEditing = false
+    
     init(selectedAirport: Binding<Airport?>, searchText: Binding<String>) {//}, overlayHeight: Binding<CGFloat>) {
         _selectedAirport = selectedAirport
         _searchText = searchText
@@ -49,7 +51,7 @@ struct AirportListView: View {
             .padding(.top, 25)
             .padding(.bottom, 5)
             .padding([.horizontal])
-            .background(Color.viewBackground)
+            searchBarView(searchText: $searchText)
             NavigationStack {
                 List(airports, selection: $selectedAirport) { section in
                     Section(Locale.current.localizedString(forRegionCode: section.title) ?? "Unknown") {
@@ -70,6 +72,6 @@ struct AirportListView: View {
                 .background(Color.viewBackground)
                 .listStyle(.inset)
             }
-        }
+        }.background(Color.viewBackground)
     }
 }

@@ -69,3 +69,20 @@ struct AircraftImageView: View {
         } 
     }
 }
+
+struct searchBarView: View {
+    @Binding var searchText: String
+    
+    var body: some View {
+        HStack(spacing: 2) {
+            Image(systemName: "magnifyingglass")
+            TextField("Search ...", text: $searchText)
+                .autocorrectionDisabled()
+                .clearButton(text: $searchText)
+        }.padding(5)
+            .background(.background)
+        .clipShape(Capsule())
+        .padding(.horizontal)
+        .padding(.bottom, 5)
+    }
+}
