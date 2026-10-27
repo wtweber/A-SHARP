@@ -11,7 +11,9 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass) var horizontalClass
     @Environment(\.windowSize) private var windowSize
     
+    //@State var overlaySize: CGSize = .zero
     @State var overlayHeight: CGFloat = .zero
+    
     @State var selectedFlight: Flight?
     @State var selectedAirport: Airport?
     @State var selectedAircraft: Aircraft?
@@ -19,27 +21,48 @@ struct ContentView: View {
     @State private var showMenu: Bool = false
     
     var body: some View {
-        RecordMapView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: $overlayHeight)
+        RecordMapView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: overlayHeight)
             .overlay(alignment: .topTrailing) {
                 Button(action: {
                     showMenu.toggle()
                 }) {
-                    Label("Settings", systemImage: "line.3.horizontal")
-                                            .labelStyle(.iconOnly)
-                                            .foregroundStyle(.primary)
-                                            .padding()
-                                            .background(.ultraThinMaterial)
-                                            .clipShape(.circle)
-                }.padding().buttonStyle(.plain)
+                    Image(systemName: "line.3.horizontal")
+                        .font(.system(size: 17, weight: .semibold))
+                        .padding(5)
+                }
+                .buttonStyle(.glass)
+                .buttonBorderShape(.circle)
+                .padding()
             }
             .overlay(alignment: .bottomLeading) {
                 VStack {
-                    NavigationTabView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: $overlayHeight)
+                    NavigationTabView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft)//, overlayHeight: $overlayHeight)
                         .clipShape(.rect(cornerRadius: 36))
                         .padding([.horizontal], max(15 * (1 - overlayHeight/windowSize.height), 0))
                         .ignoresSafeArea(edges: .bottom)
                 }
                 .frame(maxWidth: horizontalClass == .compact ? .infinity : 375, maxHeight: overlayHeight)
+                .gesture(
+                    DragGesture(minimumDistance: 50, coordinateSpace: .global)
+                        .onChanged { value in
+                            withAnimation(.snappy) {
+                                overlayHeight =  max(0, windowSize.height - value.location.y + 50)
+                            }
+                        }
+                        .onEnded { value in
+                            withAnimation(.snappy) {
+                                let releaseHeight = windowSize.height - value.predictedEndLocation.y
+                                if releaseHeight < windowSize.height * 0.3 {
+                                    overlayHeight = windowSize.height * 0.30
+                                } else if releaseHeight < windowSize.height * 0.75 {
+                                    overlayHeight = windowSize.height * 0.5
+                                } else {
+                                    overlayHeight = .infinity
+                                }
+                            }
+                        }
+                )
+                //.resizableOverlay(size: $overlaySize)
             }
             .ignoresSafeArea(edges: .leading)
             .onAppear {

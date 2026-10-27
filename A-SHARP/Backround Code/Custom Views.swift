@@ -14,10 +14,10 @@ struct TimeDivider: View {
         ZStack(alignment: .center) {
             Divider()
             if let time {
-                let duration: Duration = .seconds(time * 3600.0) // 5 minutes
+                let duration: Duration = .seconds(time * 3600.0)
                 Text(duration, format: .time(pattern: .hourMinute))
                     .padding(.horizontal, 5)
-                    .background(.background)
+                    .background(Color.viewBackground)
             }
             
         }

@@ -40,7 +40,7 @@ struct FlightRowView: View {
                     Spacer()
                 }
             }
-        }
+        }.listRowBackground(Color.green)
     }
 }
 

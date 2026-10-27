@@ -16,7 +16,7 @@ struct RecordMapView: View {
     @Binding var selectedFlight: Flight?
     @Binding var selectedAirport: Airport?
     @Binding var selectedAircraft: Aircraft?
-    @Binding var overlayHeight: CGFloat
+    @State var overlayHeight: CGFloat
     
     private let defaultCamera = MapCamera(
             centerCoordinate: CLLocationCoordinate2D(latitude: 39.8, longitude: -104.7),

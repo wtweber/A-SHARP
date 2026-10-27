@@ -9,15 +9,13 @@ import SwiftUI
 
 struct FlightDetailView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.windowSize) private var windowSize
     
     @State var flight: Flight?
-    @Binding var overlayHeight: CGFloat
     
     var body: some View {
         NavigationStack {
             VStack (alignment: .leading, spacing: 0) {
-                HStack(alignment: .top) {
+                HStack {
                     HStack(alignment: .center) {
                         let imageName: String = "Logo/\(flight?.operatorString ?? "")"
                         if imageExists(named: imageName) {
@@ -32,35 +30,18 @@ struct FlightDetailView: View {
                     }
                     Spacer()
                     Button { dismiss() } label: {
-                        Label("Close", systemImage: "xmark")
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.primary)
-                            .clipShape(.circle)
-                    }.buttonStyle(.plain)
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 17, weight: .semibold))
+                            .padding(5)
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                     
-                }.padding([.horizontal, .top])
-                    .padding(.bottom, 5)
-                    .background(Color(uiColor: .systemGroupedBackground))
-                    .gesture(
-                        DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                            .onChanged { value in
-                                withAnimation(.spring()) {
-                                    overlayHeight =  max(0, windowSize.height - value.location.y + 50)
-                                }
-                            }
-                            .onEnded { value in
-                                withAnimation(.spring()) {
-                                    let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                    if releaseHeight < windowSize.height * 0.3 {
-                                        overlayHeight = windowSize.height * 0.30
-                                    } else if releaseHeight < windowSize.height * 0.75 {
-                                        overlayHeight = windowSize.height * 0.5
-                                    } else {
-                                        overlayHeight = .infinity
-                                    }
-                                }
-                            }
-                    )
+                }
+                .padding(.top, 25)
+                .padding(.bottom, 5)
+                .padding([.horizontal])
+                .background(Color.viewBackground)
                 List {
                     Section {
                         VStack(alignment: .leading) {
@@ -73,7 +54,7 @@ struct FlightDetailView: View {
                                 VStack { Divider() }
                             }
                             tolRow(airport: flight?.destination, scheduled1: flight?.scheduledOn, actual1: flight?.actualOn, scheduled2: flight?.scheduledIn, actual2: flight?.actualIn, depart: false)
-                        }
+                        }.listRowBackground(Color.viewBackground)
                     }
                     if let aircraft = flight?.aircraft {
                         Section {
@@ -90,43 +71,43 @@ struct FlightDetailView: View {
                                     Text(aircraft.model ?? "").font(.body)
                                 }
                                 Text("\(aircraft.flights?.count ?? 0) flights, \(aircraft.totalFlightTime.formatted(.number.precision(.fractionLength(2)))) hours").font(.caption)
-                            }
+                            }.listRowBackground(Color.viewBackground)
                         }
                     }
                     Section {
-                        DoubleRow(title: "Total Time", value: flight?.totalTime)
+                        DoubleRow(title: "Total Time", value: flight?.totalTime).listRowBackground(Color.viewBackground)
                         if let pic = flight?.pic  {
-                            DoubleRow(title: "PIC", value: pic)
+                            DoubleRow(title: "PIC", value: pic).listRowBackground(Color.viewBackground)
                         }
                         if let sic = flight?.sic {
-                            DoubleRow(title: "SIC", value: sic)
+                            DoubleRow(title: "SIC", value: sic).listRowBackground(Color.viewBackground)
                         }
                         if let xc = flight?.crossCountry {
-                            DoubleRow(title: "Cross Country", value: xc)
+                            DoubleRow(title: "Cross Country", value: xc).listRowBackground(Color.viewBackground)
                         }
                         if let dg = flight?.dualGiven {
-                            DoubleRow(title: "Dual Given", value: dg)
+                            DoubleRow(title: "Dual Given", value: dg).listRowBackground(Color.viewBackground)
                         }
                         if let dr = flight?.dualRecieved {
-                            DoubleRow(title: "Dual Recieved", value: dr)
+                            DoubleRow(title: "Dual Recieved", value: dr).listRowBackground(Color.viewBackground)
                         }
                         if let night = flight?.night {
-                            DoubleRow(title: "Night", value: night)
+                            DoubleRow(title: "Night", value: night).listRowBackground(Color.viewBackground)
                         }
                         if let ait = flight?.acutalInstrument {
-                            DoubleRow(title: "Actual Ins.", value: ait)
+                            DoubleRow(title: "Actual Ins.", value: ait).listRowBackground(Color.viewBackground)
                         }
                         if let sit = flight?.simulatedInstrument {
-                            DoubleRow(title: "Simulated Ins.", value: sit)
+                            DoubleRow(title: "Simulated Ins.", value: sit).listRowBackground(Color.viewBackground)
                         }
                     }
                     Section {
                         if !(flight?.approaches?.isEmpty ?? true) {
                             ForEach(flight?.approaches ?? [], id: \.self) { app in
-                                IntRow(title: app.type?.name ?? "Unknown Type", value: app.count)
+                                IntRow(title: app.type?.name ?? "Unknown Type", value: app.count).listRowBackground(Color.viewBackground)
                             }
                         } else {
-                            Text("No approaches.")
+                            Text("No approaches.").listRowBackground(Color.viewBackground)
                         }
                     } header: {
                         Text("Approaches")
@@ -134,10 +115,10 @@ struct FlightDetailView: View {
                     Section {
                         if !(flight?.landings?.isEmpty ?? true) {
                             ForEach(flight?.landings ?? [], id: \.self) { ldg in
-                                IntRow(title: ldg.type?.name ?? "Unknown Type", value: ldg.count)
+                                IntRow(title: ldg.type?.name ?? "Unknown Type", value: ldg.count).listRowBackground(Color.viewBackground)
                             }
                         } else {
-                            Text("No landings.")
+                            Text("No landings.").listRowBackground(Color.viewBackground)
                         }
                     } header: {
                         Text("Landings")
@@ -145,13 +126,15 @@ struct FlightDetailView: View {
                     if !(flight?.crew?.isEmpty ?? true) {
                         Section {
                             ForEach(flight?.crew ?? [], id: \.self) { crewMember in
-                                Text(crewMember.fullName)
+                                Text(crewMember.fullName).listRowBackground(Color.viewBackground)
                             }
                         } header: {
-                            Text("Crew members")
+                            Text("Crew members").listRowBackground(Color.viewBackground)
                         }
                     }
-                }.listStyle(.insetGrouped)
+                }.listStyle(.inset)
+                    .scrollContentBackground(.hidden) // 👈 Removes default grey list background
+                    .background(Color.viewBackground)
                     .toolbar(.hidden, for: .navigationBar)
             }
         }
