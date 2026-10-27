@@ -23,44 +23,56 @@ struct FlightListView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                HStack {
-                    Text("Flights")
-                        .font(.system(size: 34, weight: .bold, design: .default))
-                    Spacer()
-                    Button { showNewSheet.toggle()
-                    } label: {
-                        Label("New", systemImage: "plus")
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.primary)
-                            .padding()
-                            .background(.ultraThinMaterial)
-                            .clipShape(.circle)
-                    }.buttonStyle(.plain)
+                Group {
+                    HStack {
+                        Spacer()
+                        Capsule()
+                            .fill(Color.gray)
+                            .frame(width: 50, height: 5)
+                            .padding(.top, 5)
+                            .contentShape(Rectangle())
+                        Spacer()
+                    }
+                    
+                    HStack {
+                        Text("Flights")
+                            .font(.system(size: 34, weight: .bold, design: .default))
+                        Spacer()
+                        Button { showNewSheet.toggle()
+                        } label: {
+                            Label("New", systemImage: "plus")
+                                .labelStyle(.iconOnly)
+                                .foregroundStyle(.primary)
+                                .padding()
+                                .background(.ultraThinMaterial)
+                                .clipShape(.circle)
+                        }.buttonStyle(.plain)
+                    }.padding(.top, 25)
+                        .padding(.bottom, 5)
+                    
                 }
-                    .padding([.horizontal])
-                    .padding(.top, 25)
-                    .padding(.bottom, 5)
-                    .background(Color(uiColor: .systemGroupedBackground))
-                    .gesture(
-                        DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                            .onChanged { value in
-                                withAnimation(.snappy) {
-                                    overlayHeight =  max(0, windowSize.height - value.location.y + 50)
+                .padding([.horizontal])
+                .background(Color(uiColor: .systemGroupedBackground))
+                .gesture(
+                    DragGesture(minimumDistance: 50, coordinateSpace: .global)
+                        .onChanged { value in
+                            withAnimation(.snappy) {
+                                overlayHeight =  max(0, windowSize.height - value.location.y + 50)
+                            }
+                        }
+                        .onEnded { value in
+                            withAnimation(.snappy) {
+                                let releaseHeight = windowSize.height - value.predictedEndLocation.y
+                                if releaseHeight < windowSize.height * 0.3 {
+                                    overlayHeight = windowSize.height * 0.30
+                                } else if releaseHeight < windowSize.height * 0.75 {
+                                    overlayHeight = windowSize.height * 0.5
+                                } else {
+                                    overlayHeight = .infinity
                                 }
                             }
-                            .onEnded { value in
-                                withAnimation(.snappy) {
-                                    let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                    if releaseHeight < windowSize.height * 0.3 {
-                                        overlayHeight = windowSize.height * 0.30
-                                    } else if releaseHeight < windowSize.height * 0.75 {
-                                        overlayHeight = windowSize.height * 0.5
-                                    } else {
-                                        overlayHeight = .infinity
-                                    }
-                                }
-                            }
-                    )
+                        }
+                )
                 List(flights, id: \.self, selection: $selectedFlight) { flight in
                     NavigationLink {
                         FlightDetailView(flight: flight, overlayHeight: $overlayHeight)
