@@ -47,9 +47,10 @@ struct AirportDetailView: View {
                         }
                     }
                 }
-            }.padding([.horizontal, .top])
-                .padding(.bottom, 5)
-            //.background(Color(uiColor: .systemGroupedBackground))
+            }
+            .padding(.top, 25)
+            .padding(.bottom, 5)
+            .padding([.horizontal])
             List {
                 Section {
                     ForEach(airport?.allFlights ?? []) { flight in
@@ -62,7 +63,7 @@ struct AirportDetailView: View {
             .toolbar(.hidden, for: .navigationBar)
             .listStyle(.inset)
             .scrollContentBackground(.hidden)
-            .background(Color.viewBackground)
+            //.background(Color.viewBackground)
         }.background(Color.viewBackground)
     }
 }

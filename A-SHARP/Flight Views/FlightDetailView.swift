@@ -40,7 +40,7 @@ struct FlightDetailView: View {
                 .padding(.top, 25)
                 .padding(.bottom, 5)
                 .padding([.horizontal])
-                .background(Color.viewBackground)
+
                 List {
                     Section {
                         VStack(alignment: .leading) {
@@ -131,20 +131,17 @@ struct FlightDetailView: View {
                             Text("Crew members").listRowBackground(Color.viewBackground)
                         }
                     }
-                }.listStyle(.inset)
-                    .scrollContentBackground(.hidden) // 👈 Removes default grey list background
-                    .background(Color.viewBackground)
-                    .toolbar(.hidden, for: .navigationBar)
-            }
+                }
+                .listStyle(.inset)
+                .scrollContentBackground(.hidden)
+                .toolbar(.hidden, for: .navigationBar)
+            }.background(Color.viewBackground)
         }
     }
     
     
 }
 
-/*#Preview {
- FlightDetailView()
- }*/
 
 struct tolRow: View {
     @State var airport: Airport?
