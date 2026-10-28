@@ -13,7 +13,6 @@ struct AirportDetailView: View {
     @Environment(\.windowSize) private var windowSize
     
     @State var airport: Airport?
-    //@Binding var overlayHeight: CGFloat
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -63,7 +62,6 @@ struct AirportDetailView: View {
             .toolbar(.hidden, for: .navigationBar)
             .listStyle(.inset)
             .scrollContentBackground(.hidden)
-            //.background(Color.viewBackground)
         }.background(Color.viewBackground)
     }
 }

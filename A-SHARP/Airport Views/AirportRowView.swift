@@ -18,7 +18,6 @@ struct AirportRowView: View {
                     icon.symbolRenderingMode(.hierarchical)
                         .foregroundColor(.blue)
                 }
-                
                 Text(airport.ident)
             }.font(.headline)
             if let name = airport.name {
@@ -28,8 +27,4 @@ struct AirportRowView: View {
         }
     }
 }
-/*
-#Preview {
-    AirportRowView()
-}
-*/
+
