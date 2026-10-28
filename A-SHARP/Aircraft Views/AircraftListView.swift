@@ -32,30 +32,22 @@ struct AircraftListView: View {
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("Aircraft")
-                    .font(.system(size: 34, weight: .bold, design: .default))
-                Spacer()
-            }
-            .padding(.top, 25)
-            .padding(.bottom, 5)
-            .padding([.horizontal])
-            searchBarView(searchText: $searchText)
+            VStack(alignment: .leading, spacing: 0) {
+                HStack {
+                    Text("Aircraft")
+                        .font(.system(size: 34, weight: .bold, design: .default))
+                    Spacer()
+                }
+                .padding(.top, 25)
+                .padding(.bottom, 5)
+                .padding([.horizontal])
+                searchBarView(searchText: $searchText)
                 List(aircrafts) { section in
                     Section(section.title) {
                         ForEach(section) { aircraft in
                             NavigationLink(value: SelectedItem.aircraft(item: aircraft)) {
                                 AircraftRowView(aircraft: aircraft, operatorString: aircraft.flights?.first?.operatorString)
                             }
-                            /*NavigationLink {
-                                AircraftDetailView(aircraft: aircraft)
-                                    .onDisappear {
-                                        selectedAircraft = nil
-                                    }
-                            } label: {
-                                AircraftRowView(aircraft: aircraft, operatorString: aircraft.flights?.first?.operatorString)
-                            }.tag(aircraft)*/
                             .listRowBackground(Color.viewBackground)
                         }
                     }
