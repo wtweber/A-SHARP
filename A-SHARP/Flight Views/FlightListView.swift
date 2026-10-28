@@ -16,11 +16,8 @@ struct FlightListView: View {
     @Query(sort: \Flight.actualOut, order: .reverse)
     var flights: [Flight]
     
-    @State var showNewSheet: Bool = false
     @Binding var navigationPath: [SelectedItem]
-    
-    //@Binding var selectedFlight: Flight?    //@Binding var overlayHeight: CGSize
-    //@Binding var selectedItem: SelectedItem?
+    @State var showNewSheet: Bool = false
     
     var body: some View {
         NavigationStack(path: $navigationPath) {
@@ -46,11 +43,6 @@ struct FlightListView: View {
                     NavigationLink(value: SelectedItem.flight(item: flight)) {
                         FlightRowView(flight: flight)
                     }
-                        /*FlightDetailView(flight: flight)
-                            .onDisappear { selectedItem = nil }
-                            //.onAppear { selectedItem = SelectedItem.flight(flight: flight) }
-                    } label: { FlightRowView(flight: flight) }
-                    .tag(SelectedItem.flight(flight: flight))*/
                     .listRowBackground(Color.viewBackground)
                 }
                 .navigationDestination(for: SelectedItem.self) { item in
@@ -67,21 +59,6 @@ struct FlightListView: View {
             .sheet(isPresented: $showNewSheet) {
                 EmptyView()
             }
-            /*.onChange(of: selectedItem) { _, newItem in
-                if newItem == nil {
-                    print("Reset view")
-                    //navigationPath.removeLast()
-                }
-            }*/
-            .onChange(of: navigationPath) { oldPath, newPath in
-                print("\(oldPath) - \(newPath)")
-            }
         }
     }
 }
-
-/*
- FlightDetailView(flight: flight)
- .onDisappear { selectedFlight = nil }
- } label:
- */
