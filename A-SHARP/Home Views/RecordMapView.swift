@@ -46,7 +46,7 @@ struct RecordMapView: View {
             }
             if case .airport(let airport) = navigationPath.last {
                 ForEach(airport.allFlights) { flight in
-                    if let route = flight.simpleRoute {
+                    if let route = flight.routeLine {
                         MapPolyline(coordinates: route, contourStyle: .geodesic)
                             .stroke(flight.flightType?.color ?? .accentColor, lineWidth: 2)
                     }
@@ -70,7 +70,7 @@ struct RecordMapView: View {
             }
             if case .aircraft(let aircraft) = navigationPath.last {
                 ForEach(aircraft.flights ?? []) { flight in
-                    if let route = flight.simpleRoute {
+                    if let route = flight.routeLine {
                         MapPolyline(coordinates: route, contourStyle: .geodesic)
                             .stroke(flight.flightType?.color ?? .accentColor, lineWidth: 2)
                     }
