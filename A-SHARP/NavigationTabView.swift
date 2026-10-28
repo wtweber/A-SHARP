@@ -8,7 +8,10 @@
 import SwiftUI
 
 struct NavigationTabView: View {
-    @Binding var selectedFlight: Flight?
+    @Binding var navigationPath: [SelectedItem]
+    
+    @Binding var selectedItem: SelectedItem?
+    //@Binding var selectedFlight: Flight?
     @Binding var selectedAirport: Airport?
     @Binding var selectedAircraft: Aircraft?
     //@Binding var overlayHeight: CGFloat
@@ -18,7 +21,7 @@ struct NavigationTabView: View {
     var body: some View {
         TabView {
             Tab("Flights", systemImage: "airplane.ticket") {
-                FlightListView(selectedFlight: $selectedFlight)//, overlayHeight: $overlaySize)
+                FlightListView(navigationPath: $navigationPath) //selectedItem: $selectedItem)//, overlayHeight: $overlaySize)
                 }
             Tab("Airports", image: "airport.large") {
                 AirportSearchWrapper(selectedAirport: $selectedAirport)

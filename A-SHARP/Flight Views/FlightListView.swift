@@ -8,6 +8,11 @@
 import SwiftUI
 import SwiftData
 
+enum SelectedItem: Hashable {
+    case flight(flight: Flight)
+    case airport(airport: Airport)
+}
+
 struct FlightListView: View {
     @Environment(\.dismiss) private var dismiss
     
@@ -15,11 +20,13 @@ struct FlightListView: View {
     var flights: [Flight]
     
     @State var showNewSheet: Bool = false
+    @Binding var navigationPath: [SelectedItem]
     
-    @Binding var selectedFlight: Flight?    //@Binding var overlayHeight: CGSize
+    //@Binding var selectedFlight: Flight?    //@Binding var overlayHeight: CGSize
+    //@Binding var selectedItem: SelectedItem?
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 HStack {
                     Text("Flights")
@@ -38,25 +45,46 @@ struct FlightListView: View {
                 .padding(.bottom, 5)
                 .padding([.horizontal])
                 .background(Color.viewBackground)
-                List(flights, id: \.self, selection: $selectedFlight) { flight in
-                    NavigationLink {
-                        FlightDetailView(flight: flight)//, overlayHeight: $overlayHeight)
-                            .onDisappear {
-                                selectedFlight = nil
-                            }
-                    } label: {
+                List(flights) { flight in
+                    NavigationLink(value: SelectedItem.flight(flight: flight)) {
                         FlightRowView(flight: flight)
-                    }.id(flight).listRowBackground(Color.viewBackground)
+                    }
+                        /*FlightDetailView(flight: flight)
+                            .onDisappear { selectedItem = nil }
+                            //.onAppear { selectedItem = SelectedItem.flight(flight: flight) }
+                    } label: { FlightRowView(flight: flight) }
+                    .tag(SelectedItem.flight(flight: flight))*/
+                    .listRowBackground(Color.viewBackground)
+                }
+                .navigationDestination(for: SelectedItem.self) { item in
+                    if case .flight(let flight) = item {
+                        FlightDetailView(flight: flight).onDisappear { navigationPath = [] }
+                    }
                 }
                 .scrollContentBackground(.hidden)
                 .background(Color.viewBackground)
                 .listStyle(.inset)
-                
-            }.toolbar(.hidden, for: .navigationBar)
-                .sheet(isPresented: $showNewSheet) {
-                    EmptyView()
+            }
+            
+            .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showNewSheet) {
+                EmptyView()
+            }
+            /*.onChange(of: selectedItem) { _, newItem in
+                if newItem == nil {
+                    print("Reset view")
+                    //navigationPath.removeLast()
                 }
+            }*/
+            .onChange(of: navigationPath) { oldPath, newPath in
+                print("\(oldPath) - \(newPath)")
+            }
         }
     }
 }
 
+/*
+ FlightDetailView(flight: flight)
+ .onDisappear { selectedFlight = nil }
+ } label:
+ */

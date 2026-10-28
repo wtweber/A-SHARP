@@ -13,7 +13,10 @@ struct RecordMapView: View {
     @Environment(\.windowSize) private var windowSize
     
     @State private var position: MapCameraPosition = .automatic
-    @Binding var selectedFlight: Flight?
+    
+    @Binding var navigationPath: [SelectedItem]
+    //@Binding var selectedItem: SelectedItem?
+    //@Binding var selectedFlight: Flight?
     @Binding var selectedAirport: Airport?
     @Binding var selectedAircraft: Aircraft?
     @State var overlayHeight: CGFloat
@@ -24,7 +27,7 @@ struct RecordMapView: View {
     
     var body: some View {
         Map(position: $position) {
-            if let flight = selectedFlight {
+            if case .flight(let flight) = navigationPath.last {
                 if let originLoc = flight.origin?.location {
                     Annotation("Origin", coordinate: originLoc, anchor: .center) {
                         flight.origin?.airportType?.annotationImage
@@ -44,6 +47,26 @@ struct RecordMapView: View {
                         .stroke(flight.flightType?.color ?? .accentColor, lineWidth: 2)
                 }
             }
+            /*if let flight = selectedFlight {
+                if let originLoc = flight.origin?.location {
+                    Annotation("Origin", coordinate: originLoc, anchor: .center) {
+                        flight.origin?.airportType?.annotationImage
+                            .foregroundStyle(.green, .white)
+                            .font(.title)
+                    }.annotationTitles(.hidden)
+                }
+                if let destinationLoc = flight.destination?.location {
+                    Annotation("Destination", coordinate: destinationLoc, anchor: .center) {
+                        flight.destination?.airportType?.annotationImage
+                            .foregroundStyle(.red, .white)
+                            .font(.title)
+                    }.annotationTitles(.hidden)
+                }
+                if let route = flight.routeLine {
+                    MapPolyline(coordinates: route, contourStyle: .geodesic)
+                        .stroke(flight.flightType?.color ?? .accentColor, lineWidth: 2)
+                }
+            }*/
             if let airport = selectedAirport {
                 ForEach(airport.allFlights) { flight in
                     if let route = flight.simpleRoute {
@@ -100,8 +123,8 @@ struct RecordMapView: View {
             .safeAreaInset(edge: .bottom) {
                 Color.clear.frame(height: horizontalClass == .compact ? windowSize.height * 0.3 : 0)
             }
-            .onChange(of: selectedFlight) {
-                if selectedFlight == nil { withAnimation(.easeInOut(duration: 2.0)) { position = .camera(defaultCamera) }
+            .onChange(of: navigationPath) {
+                if navigationPath.isEmpty { withAnimation(.easeInOut(duration: 2.0)) { position = .camera(defaultCamera) }
                 } else { withAnimation(.easeInOut(duration: 2.0)) { position = .automatic } }
             }
             .onChange(of: selectedAirport) {

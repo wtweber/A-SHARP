@@ -17,11 +17,14 @@ struct ContentView: View {
     @State var selectedFlight: Flight?
     @State var selectedAirport: Airport?
     @State var selectedAircraft: Aircraft?
+    @State var selectedItem: SelectedItem?
+    
+    @State var navigationPath: [SelectedItem] = []
     
     @State private var showMenu: Bool = false
     
     var body: some View {
-        RecordMapView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: overlayHeight)
+        RecordMapView(navigationPath: $navigationPath, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: overlayHeight)
             .overlay(alignment: .topTrailing) {
                 Button(action: {
                     showMenu.toggle()
@@ -36,7 +39,7 @@ struct ContentView: View {
             }
             .overlay(alignment: .bottomLeading) {
                 VStack {
-                    NavigationTabView(selectedFlight: $selectedFlight, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft)//, overlayHeight: $overlayHeight)
+                    NavigationTabView(navigationPath: $navigationPath, selectedItem: $selectedItem, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft)//, overlayHeight: $overlayHeight)
                         .clipShape(.rect(cornerRadius: 36))
                         .padding([.horizontal], max(15 * (1 - overlayHeight/windowSize.height), 0))
                         .ignoresSafeArea(edges: .bottom)
@@ -70,6 +73,9 @@ struct ContentView: View {
             }
             .sheet(isPresented: $showMenu) {
                 EmptyView()
+            }
+            .onChange(of: selectedItem) {
+                print(selectedItem)
             }
             
         
