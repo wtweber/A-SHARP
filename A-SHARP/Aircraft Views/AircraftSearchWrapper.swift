@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct AircraftSearchWrapper: View {
+    @Binding var navigationPath: [SelectedItem]
     @Binding var selectedAircraft: Aircraft?
     @State var searchText: String = ""
     
     var body: some View {
-        NavigationStack { AircraftListView(selectedAircraft: $selectedAircraft, searchText: $searchText) }
+        AircraftListView(navigationPath: $navigationPath, searchText: $searchText)
     }
 }

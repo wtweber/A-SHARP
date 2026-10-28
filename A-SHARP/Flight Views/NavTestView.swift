@@ -18,7 +18,7 @@ struct NavTestView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List(flights) { item in
-                NavigationLink(value: SelectedItem.flight(flight: item)) {
+                NavigationLink(value: SelectedItem.flight(item: item)) {
                     Text(item.ident ?? "")
                 }
             }

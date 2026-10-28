@@ -14,11 +14,11 @@ struct AircraftListView: View {
     @Query(sort: \Aircraft.registration, sectionBy: \.icaoCode)
     var aircrafts: SectionedResults<Aircraft, String>
     
-    @Binding var selectedAircraft: Aircraft?
+    @Binding var navigationPath: [SelectedItem]
     @Binding var searchText: String
     
-    init(selectedAircraft: Binding<Aircraft?>, searchText: Binding<String>) {
-        _selectedAircraft = selectedAircraft
+    init(navigationPath: Binding<[SelectedItem]>, searchText: Binding<String>) {
+        _navigationPath = navigationPath
         _searchText = searchText
         
         let queryText = searchText.wrappedValue
@@ -31,6 +31,7 @@ struct AircraftListView: View {
     }
     
     var body: some View {
+        NavigationStack(path: $navigationPath) {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Text("Aircraft")
@@ -41,27 +42,35 @@ struct AircraftListView: View {
             .padding(.bottom, 5)
             .padding([.horizontal])
             searchBarView(searchText: $searchText)
-            NavigationStack {
-                List(aircrafts, selection: $selectedAircraft) { section in
+                List(aircrafts) { section in
                     Section(section.title) {
                         ForEach(section) { aircraft in
-                            NavigationLink {
+                            NavigationLink(value: SelectedItem.aircraft(item: aircraft)) {
+                                AircraftRowView(aircraft: aircraft, operatorString: aircraft.flights?.first?.operatorString)
+                            }
+                            /*NavigationLink {
                                 AircraftDetailView(aircraft: aircraft)
                                     .onDisappear {
                                         selectedAircraft = nil
                                     }
                             } label: {
                                 AircraftRowView(aircraft: aircraft, operatorString: aircraft.flights?.first?.operatorString)
-                            }.tag(aircraft).listRowBackground(Color.viewBackground)
+                            }.tag(aircraft)*/
+                            .listRowBackground(Color.viewBackground)
                         }
+                    }
+                }
+                .navigationDestination(for: SelectedItem.self) { item in
+                    if case .aircraft(let aircraft) = item {
+                        AircraftDetailView(aircraft: aircraft).onDisappear { navigationPath = [] }
                     }
                 }
                 .toolbar(.hidden, for: .navigationBar)
                 .scrollContentBackground(.hidden)
                 .background(Color.viewBackground)
                 .listStyle(.inset)
-            }
-        }.background(Color.viewBackground)
+            }.background(Color.viewBackground)
+        }
     }
 }
 

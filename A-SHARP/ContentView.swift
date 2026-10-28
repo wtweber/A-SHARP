@@ -24,7 +24,7 @@ struct ContentView: View {
     @State private var showMenu: Bool = false
     
     var body: some View {
-        RecordMapView(navigationPath: $navigationPath, selectedAirport: $selectedAirport, selectedAircraft: $selectedAircraft, overlayHeight: overlayHeight)
+        RecordMapView(navigationPath: $navigationPath, overlayHeight: overlayHeight)
             .overlay(alignment: .topTrailing) {
                 Button(action: {
                     showMenu.toggle()

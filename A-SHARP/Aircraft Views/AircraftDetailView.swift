@@ -14,7 +14,6 @@ struct AircraftDetailView: View {
     @State var aircraft: Aircraft
     
     var body: some View {
-        NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
                 VStack(alignment: .leading) {
                     HStack {
@@ -73,8 +72,7 @@ struct AircraftDetailView: View {
                 .toolbar(.hidden, for: .navigationBar)
                 .listStyle(.inset)
                 .scrollContentBackground(.hidden)
-            }
-        }.background(Color.viewBackground)
-    }
+            }.background(Color.viewBackground)
+        }
 }
 

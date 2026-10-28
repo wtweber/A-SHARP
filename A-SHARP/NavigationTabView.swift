@@ -24,10 +24,10 @@ struct NavigationTabView: View {
                 FlightListView(navigationPath: $navigationPath) //selectedItem: $selectedItem)//, overlayHeight: $overlaySize)
                 }
             Tab("Airports", image: "airport.large") {
-                AirportSearchWrapper(selectedAirport: $selectedAirport)
+                AirportSearchWrapper(navigationPath: $navigationPath, selectedAirport: $selectedAirport)
             }
             Tab("Aircraft", systemImage: "airplane.landed") {
-                AircraftSearchWrapper(selectedAircraft: $selectedAircraft)
+                AircraftSearchWrapper(navigationPath: $navigationPath, selectedAircraft: $selectedAircraft)
                 }
             /*Tab("Crew", systemImage: "person.3") {
                 NavigationStack { EmptyView() }

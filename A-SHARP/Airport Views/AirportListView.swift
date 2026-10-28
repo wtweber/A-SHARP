@@ -15,14 +15,17 @@ struct AirportListView: View {
     @Query(sort: \Airport.icao, sectionBy: \.isoCountryCode)
     var airports: SectionedResults<Airport, String>
     
-    @Binding var selectedAirport: Airport?
+    @Binding var navigationPath: [SelectedItem]
+    
+    //@Binding var selectedAirport: Airport?
     @Binding var searchText: String
     //@Binding var overlayHeight: CGFloat
     
-    @State private var isEditing = false
+    //@State private var isEditing = false
     
-    init(selectedAirport: Binding<Airport?>, searchText: Binding<String>) {//}, overlayHeight: Binding<CGFloat>) {
-        _selectedAirport = selectedAirport
+    init(navigationPath: Binding<[SelectedItem]>, searchText: Binding<String>) {//}, overlayHeight: Binding<CGFloat>) {
+        //_selectedAirport = selectedAirport
+        _navigationPath = navigationPath
         _searchText = searchText
         //_overlayHeight = overlayHeight
         
@@ -52,19 +55,28 @@ struct AirportListView: View {
             .padding(.bottom, 5)
             .padding([.horizontal])
             searchBarView(searchText: $searchText)
-            NavigationStack {
-                List(airports, selection: $selectedAirport) { section in
+            NavigationStack(path: $navigationPath) {
+                List(airports) { section in
                     Section(Locale.current.localizedString(forRegionCode: section.title) ?? "Unknown") {
                         ForEach(section) { airport in
-                            NavigationLink {
+                            /*NavigationLink {
                                 AirportDetailView(airport: airport)//, overlayHeight: $overlayHeight)
                                     .onDisappear {
                                         selectedAirport = nil
                                     }
                             } label: {
                                 AirportRowView(airport: airport)
-                            }.tag(airport).listRowBackground(Color.viewBackground)
+                            }.tag(airport)*/
+                            NavigationLink(value: SelectedItem.airport(item: airport)) {
+                                AirportRowView(airport: airport)
+                            }
+                             .listRowBackground(Color.viewBackground)
                         }
+                    }
+                }
+                .navigationDestination(for: SelectedItem.self) { item in
+                    if case .airport(let airport) = item {
+                        AirportDetailView(airport: airport).onDisappear { navigationPath = [] }
                     }
                 }
                 .toolbar(.hidden, for: .navigationBar)

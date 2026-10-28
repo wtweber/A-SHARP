@@ -8,10 +8,7 @@
 import SwiftUI
 import SwiftData
 
-enum SelectedItem: Hashable {
-    case flight(flight: Flight)
-    case airport(airport: Airport)
-}
+
 
 struct FlightListView: View {
     @Environment(\.dismiss) private var dismiss
@@ -46,7 +43,7 @@ struct FlightListView: View {
                 .padding([.horizontal])
                 .background(Color.viewBackground)
                 List(flights) { flight in
-                    NavigationLink(value: SelectedItem.flight(flight: flight)) {
+                    NavigationLink(value: SelectedItem.flight(item: flight)) {
                         FlightRowView(flight: flight)
                     }
                         /*FlightDetailView(flight: flight)
