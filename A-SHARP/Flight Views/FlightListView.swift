@@ -32,8 +32,7 @@ struct FlightListView: View {
                             .font(.system(size: 17, weight: .semibold))
                             .padding(5)
                     }
-                    .buttonStyle(.glass)
-                    .buttonBorderShape(.circle)
+                    .buttonStyle(.primaryRoundButton)
                 }
                 .padding(.top, 25)
                 .padding(.bottom, 5)

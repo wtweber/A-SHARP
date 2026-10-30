@@ -32,9 +32,9 @@ struct NavigationTabView: View {
             Tab("Crew", systemImage: "person.3") {
                 CrewSearchWrapper(navigationPath: $navigationPath)
                 }
-            /*Tab("Stats", systemImage: "chart.pie", role: .search) {
-                StatsView(overlayHeight: $overlayHeight)
-            }*/
+            Tab("Stats", systemImage: "chart.pie", role: .search) {
+                StatsView(navigationPath: $navigationPath)
+            }
         }.environment(\.horizontalSizeClass, .compact)
     }
 }

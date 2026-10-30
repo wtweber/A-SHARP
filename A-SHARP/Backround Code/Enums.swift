@@ -740,4 +740,22 @@ enum SelectedItem: Hashable {
     case airport(item: Airport)
     case aircraft(item: Aircraft)
     case person(item: Person)
+    case stats(item: [Flight])
+    
+}
+
+enum FlightFilter: Hashable {
+    case alltime
+    case year(year: Int)
+    case airline
+    case military
+    case ga
+    
+    var title: String {
+        switch self {
+        case .alltime: return "All Time"
+        case .year(let year): return "\(year)"
+        default: return ""
+        }
+    }
 }

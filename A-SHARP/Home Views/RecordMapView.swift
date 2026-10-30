@@ -116,6 +116,30 @@ struct RecordMapView: View {
                     }
                 }
             }
+            if case .stats(let flights) = navigationPath.last {
+                ForEach(flights) { flight in
+                    if let route = flight.simpleRoute {
+                        MapPolyline(coordinates: route, contourStyle: .geodesic)
+                            .stroke(flight.flightType?.color ?? .accentColor, lineWidth: 2)
+                    }
+                    if let loc = flight.origin?.location {
+                        Annotation(flight.origin?.ident ?? "", coordinate: loc, anchor: .center) {
+                            Image(systemName: "circle.fill")
+                            //.foregroundStyle(Color.green)
+                                .foregroundStyle(flight.accentColor.mix(with: Color.primary, by: 0.25))
+                                .font(.caption2)
+                        }
+                    }
+                    if let loc = flight.destination?.location {
+                        Annotation(flight.destination?.ident ?? "", coordinate: loc, anchor: .center) {
+                            Image(systemName: "circle.fill")
+                            //.foregroundStyle(Color.red)
+                                .foregroundStyle(flight.accentColor.mix(with: Color.primary, by: 0.25))
+                                .font(.caption2)
+                        }
+                    }
+                }
+            }
         }
         .mapStyle(.hybrid(elevation: .realistic))
         .safeAreaInset(edge: .leading) {
