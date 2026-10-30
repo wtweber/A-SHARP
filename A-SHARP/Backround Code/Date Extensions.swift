@@ -45,3 +45,25 @@ extension TimeZone {
         return "GMT\(formatter.string(from: Date()))"
     }
 }
+
+extension Duration {
+    var days: Double {
+        return Double(self.components.seconds) / 86400.0
+    }
+    var weeks: Double {
+        Double(self.components.seconds) / 604800.0
+    }
+    var months: Double {
+        Double(self.components.seconds) / 2628000.0
+    }
+    var years: Double {
+        Double(self.components.seconds) / 31536000.0
+    }
+    
+    func divided(by: Int) -> Duration {
+        if by == 0 { return self }
+        let seconds = self.components.seconds
+        return .seconds(Int(seconds) / by)
+    }
+}
+
