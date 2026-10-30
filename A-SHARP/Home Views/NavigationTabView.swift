@@ -29,10 +29,10 @@ struct NavigationTabView: View {
             Tab("Aircraft", systemImage: "airplane.landed") {
                 AircraftSearchWrapper(navigationPath: $navigationPath, selectedAircraft: $selectedAircraft)
                 }
-            /*Tab("Crew", systemImage: "person.3") {
-                NavigationStack { EmptyView() }
+            Tab("Crew", systemImage: "person.3") {
+                CrewSearchWrapper(navigationPath: $navigationPath)
                 }
-            Tab("Stats", systemImage: "chart.pie", role: .search) {
+            /*Tab("Stats", systemImage: "chart.pie", role: .search) {
                 StatsView(overlayHeight: $overlayHeight)
             }*/
         }.environment(\.horizontalSizeClass, .compact)
