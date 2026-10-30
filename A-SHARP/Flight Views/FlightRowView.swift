@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FlightRowView: View {
-    @State var flight: Flight
+    let flight: Flight
     
     var body: some View {
         HStack {

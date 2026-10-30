@@ -39,3 +39,51 @@ extension View {
         self.modifier(ClearButtonModifier(text: text))
     }
 }
+
+struct PrimaryRoundButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 17, weight: .semibold))
+            .padding(5)
+            .glassEffect(.regular.interactive(), in: .circle)
+    }
+}
+struct PrimaryCapsulButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 17, weight: .semibold))
+            .padding(10)
+            .glassEffect(.regular.interactive(), in: .capsule)
+    }
+}
+struct PrimaryPlainButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 17, weight: .semibold))
+            .padding(10)
+    }
+}
+extension ButtonStyle where Self == PrimaryRoundButtonStyle {
+    static var primaryRoundButton: PrimaryRoundButtonStyle {
+        PrimaryRoundButtonStyle()
+    }
+    static var primaryCapsulButton: PrimaryCapsulButtonStyle {
+        PrimaryCapsulButtonStyle()
+    }
+    static var primaryPlainButton: PrimaryPlainButtonStyle {
+        PrimaryPlainButtonStyle()
+    }
+}
+
+
+struct SelectedFilterStyle: ButtonStyle {
+    let isSelected: Bool // Your custom condition
+    
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.system(size: 17, weight: .semibold))
+            .foregroundStyle(isSelected ? .primary : .secondary)
+            .padding(10)
+            .glassEffect(isSelected ? .regular : .identity)
+    }
+}
