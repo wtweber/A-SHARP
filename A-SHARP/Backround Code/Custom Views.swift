@@ -14,10 +14,10 @@ struct TimeDivider: View {
         ZStack(alignment: .center) {
             Divider()
             if let time {
-                let duration: Duration = .seconds(time * 3600.0) // 5 minutes
+                let duration: Duration = .seconds(time * 3600.0)
                 Text(duration, format: .time(pattern: .hourMinute))
                     .padding(.horizontal, 5)
-                    .background(.background)
+                    .background(Color.viewBackground)
             }
             
         }
@@ -67,5 +67,35 @@ struct AircraftImageView: View {
                 .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .stroke(CompanyColor(rawValue: operatorString ?? "")?.color ?? Color.accentColor, lineWidth: 5))
         } 
+    }
+}
+
+struct searchBarView: View {
+    @Binding var searchText: String
+    
+    var body: some View {
+        HStack(spacing: 2) {
+            Image(systemName: "magnifyingglass")
+            TextField("Search ...", text: $searchText)
+                .autocorrectionDisabled()
+                .clearButton(text: $searchText)
+        }.padding(5)
+            .background(.background)
+        .clipShape(Capsule())
+        .padding(.horizontal)
+        .padding(.bottom, 5)
+    }
+}
+
+struct IdentBox: View {
+    @State var ident: String
+    
+    var body: some View {
+        Text(ident)
+            .padding(2)
+            .overlay(
+                RoundedRectangle(cornerRadius: 2)
+                    .stroke(.secondary, lineWidth: 1) // Draws the outline
+            )
     }
 }

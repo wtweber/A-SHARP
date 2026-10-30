@@ -734,3 +734,10 @@ enum SHARPType: String {
     }
 }
 
+
+enum SelectedItem: Hashable {
+    case flight(item: Flight)
+    case airport(item: Airport)
+    case aircraft(item: Aircraft)
+    case person(item: Person)
+}

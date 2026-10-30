@@ -8,59 +8,57 @@
 import SwiftUI
 import SwiftData
 
+
+
 struct FlightListView: View {
-    @Environment(\.windowSize) private var windowSize
     @Environment(\.dismiss) private var dismiss
     
     @Query(sort: \Flight.actualOut, order: .reverse)
     var flights: [Flight]
     
-    @Binding var selectedFlight: Flight?
-    @Binding var overlayHeight: CGFloat
+    @Binding var navigationPath: [SelectedItem]
+    @State var showNewSheet: Bool = false
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             VStack(spacing: 0) {
                 HStack {
                     Text("Flights")
+                        .font(.system(size: 34, weight: .bold, design: .default))
                     Spacer()
-                }.font(.system(size: 34, weight: .bold, design: .default))
-                    .padding([.horizontal])
-                    .padding(.top, 25)
-                    .padding(.bottom, 5)
-                    .background(Color(uiColor: .systemGroupedBackground))
-                    .gesture(
-                        DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                            .onChanged { value in
-                                withAnimation(.spring()) {
-                                    overlayHeight =  max(0, windowSize.height - value.location.y + 50)
-                                }
-                            }
-                            .onEnded { value in
-                                withAnimation(.snappy) {
-                                    let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                    if releaseHeight < windowSize.height * 0.3 {
-                                        overlayHeight = windowSize.height * 0.30
-                                    } else if releaseHeight < windowSize.height * 0.75 {
-                                        overlayHeight = windowSize.height * 0.5
-                                    } else {
-                                        overlayHeight = .infinity
-                                    }
-                                }
-                            }
-                    )
-                List(flights, id: \.self, selection: $selectedFlight) { flight in
-                    NavigationLink {
-                        FlightDetailView(flight: flight, overlayHeight: $overlayHeight)
-                            .onDisappear {
-                                selectedFlight = nil
-                            }
+                    Button { showNewSheet.toggle()
                     } label: {
-                        FlightRowView(flight: flight)
-                    }.id(flight)
+                        Image(systemName: "plus")
+                            .font(.system(size: 17, weight: .semibold))
+                            .padding(5)
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                 }
-            }.toolbar(.hidden, for: .navigationBar)
+                .padding(.top, 25)
+                .padding(.bottom, 5)
+                .padding([.horizontal])
+                .background(Color.viewBackground)
+                List(flights) { flight in
+                    NavigationLink(value: SelectedItem.flight(item: flight)) {
+                        FlightRowView(flight: flight)
+                    }
+                    .listRowBackground(Color.viewBackground)
+                }
+                .navigationDestination(for: SelectedItem.self) { item in
+                    if case .flight(let flight) = item {
+                        FlightDetailView(flight: flight).onDisappear { navigationPath = [] }
+                    }
+                }
+                .scrollContentBackground(.hidden)
+                .background(Color.viewBackground)
+                .listStyle(.inset)
+            }
+            
+            .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showNewSheet) {
+                EmptyView()
+            }
         }
     }
 }
-

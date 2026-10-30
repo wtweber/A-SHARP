@@ -15,14 +15,12 @@ struct AirportListView: View {
     @Query(sort: \Airport.icao, sectionBy: \.isoCountryCode)
     var airports: SectionedResults<Airport, String>
     
-    @Binding var selectedAirport: Airport?
+    @Binding var navigationPath: [SelectedItem]
     @Binding var searchText: String
-    @Binding var overlayHeight: CGFloat
     
-    init(selectedAirport: Binding<Airport?>, searchText: Binding<String>, overlayHeight: Binding<CGFloat>) {
-        _selectedAirport = selectedAirport
+    init(navigationPath: Binding<[SelectedItem]>, searchText: Binding<String>) {//}, overlayHeight: Binding<CGFloat>) {
+        _navigationPath = navigationPath
         _searchText = searchText
-        _overlayHeight = overlayHeight
         
         let queryText = searchText.wrappedValue
         _airports = Query(filter: #Predicate {
@@ -39,51 +37,38 @@ struct AirportListView: View {
     }
     
     var body: some View {
-        
-        VStack(spacing: 0) {
-            HStack {
-                Text("Airports")
-                Spacer()
-            }.font(.system(size: 34, weight: .bold, design: .default))
-                .padding([.horizontal, .top])
+        NavigationStack(path: $navigationPath) {
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Airports")
+                        .font(.system(size: 34, weight: .bold, design: .default))
+                    Spacer()
+                }
+                .padding(.top, 25)
                 .padding(.bottom, 5)
-                .background(Color(uiColor: .systemGroupedBackground))
-                .gesture(
-                    DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                        .onChanged { value in
-                            withAnimation(.spring()) {
-                                overlayHeight =  max(0, windowSize.height - value.location.y + 50)
-                            }
-                        }
-                        .onEnded { value in
-                            withAnimation(.spring()) {
-                                let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                if releaseHeight < windowSize.height * 0.3 {
-                                    overlayHeight = windowSize.height * 0.30
-                                } else if releaseHeight < windowSize.height * 0.75 {
-                                    overlayHeight = windowSize.height * 0.5
-                                } else {
-                                    overlayHeight = .infinity
-                                }
-                            }
-                        }
-                )
-            NavigationStack {
-                List(airports, selection: $selectedAirport) { section in
+                .padding([.horizontal])
+                searchBarView(searchText: $searchText)
+                
+                List(airports) { section in
                     Section(Locale.current.localizedString(forRegionCode: section.title) ?? "Unknown") {
                         ForEach(section) { airport in
-                            NavigationLink {
-                                AirportDetailView(airport: airport, overlayHeight: $overlayHeight)
-                                    .onDisappear {
-                                        selectedAirport = nil
-                                    }
-                            } label: {
+                            NavigationLink(value: SelectedItem.airport(item: airport)) {
                                 AirportRowView(airport: airport)
-                            }.tag(airport)
+                            }
+                            .listRowBackground(Color.viewBackground)
                         }
                     }
-                }.toolbar(.hidden, for: .navigationBar)
-            }
+                }
+                .navigationDestination(for: SelectedItem.self) { item in
+                    if case .airport(let airport) = item {
+                        AirportDetailView(airport: airport).onDisappear { navigationPath = [] }
+                    }
+                }
+                .toolbar(.hidden, for: .navigationBar)
+                .scrollContentBackground(.hidden)
+                .background(Color.viewBackground)
+                .listStyle(.inset)
+            }.background(Color.viewBackground)
         }
     }
 }

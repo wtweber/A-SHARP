@@ -13,54 +13,26 @@ struct AirportDetailView: View {
     @Environment(\.windowSize) private var windowSize
     
     @State var airport: Airport?
-    @Binding var overlayHeight: CGFloat
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading) {
-                HStack (alignment: .top) {
+                HStack {
                     Text(airport?.name ?? "").font(.title)
                     Spacer()
                     Button { dismiss() } label: {
-                        Label("Close", systemImage: "xmark")
-                            .labelStyle(.iconOnly)
-                            .foregroundStyle(.primary)
-                            .clipShape(.circle)
-                    }.buttonStyle(.plain)
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 17, weight: .semibold))
+                            .padding(5)
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.circle)
                 }.padding(.bottom, 0)
                 HStack {
-                    if let icao = airport?.icao {
-                        Text(icao)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
-                    if let iata = airport?.iata {
-                        Text(iata)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
-                    if let gps = airport?.gpsCode {
-                        Text(gps)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
-                    if let local = airport?.localCode {
-                        Text(local)
-                            .padding(2)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 2)
-                                    .stroke(.secondary, lineWidth: 1) // Draws the outline
-                            )
-                    }
+                    if let icao = airport?.icao { IdentBox(ident: icao) }
+                    if let iata = airport?.iata { IdentBox(ident: iata) }
+                    if let gps = airport?.gpsCode { IdentBox(ident: gps) }
+                    if let local = airport?.localCode { IdentBox(ident: local) }
                 }.font(.caption).foregroundStyle(Color.secondary)
                 HStack {
                     if let iso = airport?.isoCountryCode {
@@ -74,38 +46,22 @@ struct AirportDetailView: View {
                         }
                     }
                 }
-            }.padding([.horizontal, .top])
-                .padding(.bottom, 5)
-                .background(Color(uiColor: .systemGroupedBackground))
-                .gesture(
-                    DragGesture(minimumDistance: 50, coordinateSpace: .global)
-                        .onChanged { value in
-                            withAnimation(.spring()) {
-                                overlayHeight =  max(0, windowSize.height - value.location.y + 50)
-                            }
-                        }
-                        .onEnded { value in
-                            withAnimation(.spring()) {
-                                let releaseHeight = windowSize.height - value.predictedEndLocation.y
-                                if releaseHeight < windowSize.height * 0.3 {
-                                    overlayHeight = windowSize.height * 0.30
-                                } else if releaseHeight < windowSize.height * 0.75 {
-                                    overlayHeight = windowSize.height * 0.5
-                                } else {
-                                    overlayHeight = .infinity
-                                }
-                            }
-                        }
-                )
+            }
+            .padding(.top, 25)
+            .padding(.bottom, 5)
+            .padding([.horizontal])
             List {
                 Section {
                     ForEach(airport?.allFlights ?? []) { flight in
-                        FlightRowView(flight: flight)
+                        FlightRowView(flight: flight).listRowBackground(Color.viewBackground)
                     }
                 } header: {
                     Text("\(airport?.allFlights.count ?? 0) Flights")
                 }
-            }.toolbar(.hidden, for: .navigationBar)
-        }
+            }
+            .toolbar(.hidden, for: .navigationBar)
+            .listStyle(.inset)
+            .scrollContentBackground(.hidden)
+        }.background(Color.viewBackground)
     }
 }
