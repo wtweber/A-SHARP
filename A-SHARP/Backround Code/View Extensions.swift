@@ -87,3 +87,9 @@ struct SelectedFilterStyle: ButtonStyle {
             .glassEffect(isSelected ? .regular : .identity)
     }
 }
+
+extension Image {
+    static var flightAware: Image {
+        return Image("Company/FlightAware")
+    }
+}

@@ -34,6 +34,15 @@ extension Date {
         }
         return formatter.string(from: self)
     }
+    
+    func stringWith(timeZone: TimeZone?) -> String {
+        var style = Date.FormatStyle(
+            date: .omitted,
+            time: .shortened
+        )
+        style.timeZone = timeZone ?? .gmt
+        return self.formatted(style)
+    }
 }
 
 extension TimeZone {
@@ -67,3 +76,10 @@ extension Duration {
     }
 }
 
+extension Date.FormatStyle {
+    func withTimeZone(_ timeZone: TimeZone ) -> Date.FormatStyle {
+        var copy = self
+        copy.timeZone = timeZone
+        return copy
+    }
+}

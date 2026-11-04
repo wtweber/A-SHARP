@@ -56,7 +56,10 @@ struct FlightListView: View {
             
             .toolbar(.hidden, for: .navigationBar)
             .sheet(isPresented: $showNewSheet) {
-                EmptyView()
+                NavigationStack {
+                    NewFlightView()
+                        .navigationTitle("New Flight")
+                }
             }
         }
     }

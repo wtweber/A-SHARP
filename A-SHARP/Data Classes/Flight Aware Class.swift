@@ -7,6 +7,7 @@
 
 import Foundation
 import MapKit
+import SwiftUI
 
 struct FlightAwareFlightsResponce: Decodable {
     let flights: [Flight]
@@ -24,9 +25,12 @@ struct FlightAwarePositions: Decodable {
     }*/
 }
 
-struct FlightAwareFlight: Decodable, Identifiable, Equatable {
+struct FlightAwareFlight: Decodable, Identifiable, Equatable, Hashable {
     let id: UUID = UUID()
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(faFlightId)
+    }
     static func == (lhs: borrowing FlightAwareFlight, rhs: borrowing FlightAwareFlight) -> Bool {
         return lhs.faFlightId == rhs.faFlightId
     }
@@ -147,6 +151,15 @@ struct FlightAwareAirport: Decodable {  //FlightAirportRef: Information for this
             return .init(latitude: latitude, longitude: longitude)
         } else { return nil }
     }
+    
+    var dataAirport: Airport {
+        var airport = Airport()
+        airport.icao = self.codeIcao
+        airport.iata = self.codeIata
+        airport.name = self.name
+        airport.timeZoneString = self.timezone
+        return airport
+    }
 }
 
 
@@ -163,12 +176,50 @@ func getRawFAFlights(_ callsign: String?, date: Date?) async throws -> [FlightAw
     request.addValue("ZqOTne2DhatI2bsFdf9y76gLuQwH1ajn", forHTTPHeaderField: "x-apikey")
     do {
         let (data, _) = try await URLSession.shared.data(for: request)
-        print(try JSONSerialization.jsonObject(with: data, options: []))
+        //print(try JSONSerialization.jsonObject(with: data, options: []))
         let decoder = JSONDecoder().FlightAwareDecoder
         let wrapper = try decoder.decode(FlightAwareRawResponce.self, from: data)
+        print(wrapper.flights)
         return wrapper.flights
     } catch {
         print(error.localizedDescription)
         throw error
+    }
+}
+
+struct flightAwareRow: View {
+    @State var flight: FlightAwareFlight
+    
+    var body: some View {
+        HStack(alignment: .center) {
+            if let flightDate = flight.actualOut {
+                VStack(alignment: .center) {
+                    Text(flightDate, format: .dateTime.month()
+                        .withTimeZone(TimeZone(identifier: flight.origin?.timezone ?? "GMT")!))
+                    Text(flightDate, format: .dateTime.day()
+                        .withTimeZone(TimeZone(identifier: flight.origin?.timezone ?? "GMT")!)).font(.headline)
+                    Text(flightDate, format: .dateTime.year()
+                        .withTimeZone(TimeZone(identifier: flight.origin?.timezone ?? "GMT")!))
+                }
+                Divider()
+            }
+            VStack {
+                HStack {
+                    Text(flight.origin?.code ?? "")
+                    Spacer()
+                    Text(flight.destination?.code ?? "")
+                }.font(.headline)
+                HStack {
+                    if let aout = flight.actualOut {
+                        Text(aout.formatedTimeString(timeZone: TimeZone(identifier: flight.origin?.timezone ?? "")))
+                    }
+                    Spacer()
+                    if let ain = flight.actualIn {
+                        Text(ain.formatedTimeString(timeZone: TimeZone(identifier: flight.destination?.timezone ?? "")))
+                    }
+                }
+            }
+        }
+        
     }
 }

@@ -759,3 +759,13 @@ enum FlightFilter: Hashable {
         }
     }
 }
+
+enum Seat: String, CaseIterable  {
+    case capt
+    case fo
+}
+
+enum Role: String, CaseIterable {
+    case pf
+    case pm
+}

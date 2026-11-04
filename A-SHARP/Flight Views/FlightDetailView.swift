@@ -159,22 +159,28 @@ struct tolRow: View {
                 Text("\(airport?.ident ?? "") • \(airport?.name ?? "")")
             }
             
-            if actual1 != nil {
+            if let a1 = actual1 {
                 Text(depart ? "Out" : "On").font(.caption)
                 HStack(alignment: .firstTextBaseline) {
-                    Text("\(actual1?.formatted(date: .omitted, time: .shortened) ?? "")").font(.largeTitle)
-                    Text("\(scheduled1?.formatted(date: .omitted, time: .shortened) ?? "")").font(.caption)
-                    Spacer()
+                    Text(a1.stringWith(timeZone: airport?.timeZone)).font(.largeTitle)
+                    if let s1 = scheduled1 {
+                        Text(s1.stringWith(timeZone: airport?.timeZone)).font(.caption)
+                    }
                 }
             }
-            if actual2 != nil {
+            if let a2 = actual2 {
                 Text(depart ? "Off" : "In").font(.caption)
                 HStack(alignment: .firstTextBaseline) {
-                    Text("\(actual2?.formatted(date: .omitted, time: .shortened) ?? "")").font(.largeTitle)
-                    Text("\(scheduled2?.formatted(date: .omitted, time: .shortened) ?? "")").font(.caption)
-                    Spacer()
+                    Text(a2.stringWith(timeZone: airport?.timeZone)).font(.largeTitle)
+                    if let s2 = scheduled2 {
+                        Text(s2.stringWith(timeZone: airport?.timeZone)).font(.caption)
+                    }
                 }
             }
+            
+        }.onAppear {
+            print(airport?.timeZone)
+        } .onChange(of: airport) {
             
         }
     }
